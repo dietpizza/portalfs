@@ -1,0 +1,52 @@
+version: "3"
+
+vars:
+  BINARY: selfserve
+  DISTDIR: dist
+
+tasks:
+  help:
+    desc: display available tasks
+    cmds:
+      - |
+        echo "task targets:"
+        echo "  task dev          # run the service for development (go run)"
+        echo "  task release      # build optimized release binary into {{.DISTDIR}}/"
+        echo "  task clean        # remove built artifacts"
+        echo "  task build-web    # copy frontend build into web/"
+
+  build-web:
+    desc: build svelte web package
+    cmds:
+      - echo "building web..."
+      # - cd web && bun install
+      # - cd web && bun run build
+
+  dev:
+    desc: run the service for development (go run)
+    cmds:
+      - task: build-web
+      - echo "starting development server..."
+      - wgo go run . -p 3000
+
+  release:
+    desc: build optimized release binary into ${DISTDIR}/
+    cmds:
+      - task: clean
+      - task: build-web
+      - mkdir -p {{.DISTDIR}}
+      - CGO_ENABLED=0 GOOS=$(go env GOOS) GOARCH=$(go env GOARCH) go build -ldflags "-s -w" -o {{.DISTDIR}}/{{.BINARY}} ./...
+      - upx {{.DISTDIR}}/{{.BINARY}}
+
+  clean:
+    desc: clean build artifacts
+    cmds:
+      - echo "cleaning..."
+      - rm -rf {{.DISTDIR}}
+
+  reset:
+    desc: clean all artifacts and node_modules
+    cmds:
+      - echo "resetting..."
+      - rm -rf {{.DISTDIR}}
+      - rm -rf web/node_modules

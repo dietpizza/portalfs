@@ -1,0 +1,9 @@
+app:
+  port: 3000
+
+volumes:
+  - name: SweetMix
+    path: /run/media/rohan/W0/SweetMix
+
+  - name: Home
+    path: /home/rohan
