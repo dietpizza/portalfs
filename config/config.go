@@ -9,18 +9,23 @@ import (
 
 type AppConfig struct {
 	App     AppSettings `mapstructure:"app"`
-	Volumes []string    `mapstructure:"volumes"`
+	Volumes []Volume    `mapstructure:"volumes"`
 }
 
 type AppSettings struct {
 	Port int `mapstructure:"port"`
 }
 
+type Volume struct {
+	Name string `mapstructure:"name"`
+	Path string `mapstructure:"path"`
+}
+
 var DefaultAppConfig = AppConfig{
 	App: AppSettings{
 		Port: 3000,
 	},
-	Volumes: []string{},
+	Volumes: []Volume{},
 }
 
 var (

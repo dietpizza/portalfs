@@ -7,4 +7,5 @@ import (
 func SetupRoutes(router *gin.Engine) {
 	HealthCheckGroup(router)
 	SetupStaticFilesGroup(router)
+	SetupListingGroup(router)
 }

@@ -3,5 +3,7 @@ app:
   name: "PortalFS"
 
 volumes:
-  - /run/media/rohan/W0/SweetMix
-  - /home/rohan
+  - name: SweetMix
+    path: /run/media/rohan/W0/SweetMix
+  - name: Rohan
+    path: /home/rohan
