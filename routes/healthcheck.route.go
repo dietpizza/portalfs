@@ -4,18 +4,18 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/gin-gonic/gin"
 )
 
 var startTime = time.Now()
 
-func HealthCheckHandler(c fiber.Ctx) error {
-	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"status": "healthy",
+func HealthCheckHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
 		"uptime": time.Since(startTime).String(),
 	})
 }
 
-func SetupHealthCheckRoutes(app *fiber.App) {
-	app.Get("/health", HealthCheckHandler)
+func HealthCheckGroup(router *gin.Engine) {
+	router.GET("/health", HealthCheckHandler)
 }

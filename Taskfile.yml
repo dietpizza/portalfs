@@ -1,7 +1,7 @@
 version: "3"
 
 vars:
-  BINARY: selfserve
+  BINARY: portalfs
   DISTDIR: dist
 
 tasks:
@@ -16,7 +16,7 @@ tasks:
         echo "  task build-web    # copy frontend build into web/"
 
   build-web:
-    desc: build svelte web package
+    desc: build web package
     cmds:
       - echo "building web..."
       # - cd web && bun install
@@ -35,7 +35,7 @@ tasks:
       - task: clean
       - task: build-web
       - mkdir -p {{.DISTDIR}}
-      - CGO_ENABLED=0 GOOS=$(go env GOOS) GOARCH=$(go env GOARCH) go build -ldflags "-s -w" -o {{.DISTDIR}}/{{.BINARY}} ./...
+      - CGO_ENABLED=0 GOOS=$(go env GOOS) GOARCH=$(go env GOARCH) go build -ldflags "-s -w" -o {{.DISTDIR}}/{{.BINARY}} .
       - upx {{.DISTDIR}}/{{.BINARY}}
 
   clean:

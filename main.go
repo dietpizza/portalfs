@@ -2,19 +2,32 @@ package main
 
 import (
 	"dietpizza/portalfs/config"
+	"dietpizza/portalfs/middleware"
 	"dietpizza/portalfs/routes"
 	"fmt"
 	"log"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	config := config.GetConfig()
-	host_port := fmt.Sprintf("0.0.0.0:%d", config.App.Port)
+	server := ConfigureServer()
 
-	server := fiber.New()
-	routes.SetupRoutes(server)
+	err := server.Run(fmt.Sprintf(":%d", config.App.Port))
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
-	log.Fatal(server.Listen(host_port))
+func ConfigureServer() *gin.Engine {
+	router := gin.New()
+
+	router.Use(gin.Recovery())
+	router.Use(gin.Logger())
+	router.Use(middleware.CorsAllowAll())
+
+	routes.SetupRoutes(router)
+
+	return router
 }

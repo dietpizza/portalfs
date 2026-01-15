@@ -3,32 +3,26 @@ package routes
 import (
 	"dietpizza/portalfs/config"
 	"dietpizza/portalfs/util"
-	"os"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/static"
+	"github.com/gin-gonic/gin"
 )
 
-func CreateStaticRoute(group fiber.Router, path string, osPath string) {
-	group.Get("/"+path+"*", static.New("", static.Config{
-		FS:        os.DirFS(osPath),
-		Browse:    false,
-		ByteRange: true,
-		Download:  true,
-	}))
+func CreateStaticRoute(router *gin.RouterGroup, path string, osPath string) {
+	relPath := "/" + path
+
+	router.StaticFS(relPath, gin.Dir(osPath, false))
 }
 
-func SetupStaticFilesGroup(app *fiber.App) {
-	static_routes := app.Group("/static")
-
+func SetupStaticFilesGroup(router *gin.Engine) {
 	volumes := config.GetConfig().Volumes
+	staticGroup := router.Group("/static")
 
 	for _, osPath := range volumes {
 		folderExists := util.DoesDirExist(osPath)
 
 		if folderExists {
 			urlPath := util.GetDirName(osPath)
-			CreateStaticRoute(static_routes, urlPath, osPath)
+			CreateStaticRoute(staticGroup, urlPath, osPath)
 		}
 	}
 }

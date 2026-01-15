@@ -16,6 +16,13 @@ type AppSettings struct {
 	Port int `mapstructure:"port"`
 }
 
+var DefaultAppConfig = AppConfig{
+	App: AppSettings{
+		Port: 3000,
+	},
+	Volumes: []string{},
+}
+
 var (
 	config *AppConfig
 	once   sync.Once
@@ -23,7 +30,7 @@ var (
 
 func GetConfig() *AppConfig {
 	once.Do(func() {
-		viper.SetConfigName("default")
+		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 		viper.AddConfigPath(".")
 
@@ -32,8 +39,7 @@ func GetConfig() *AppConfig {
 			log.Fatalf("Error reading config file, %s", err)
 		}
 
-		config = &AppConfig{}
-		// "unmarshal" / parse yaml code
+		config = &DefaultAppConfig
 		err = viper.Unmarshal(config)
 		if err != nil {
 			log.Fatal("Unable to parse config file")

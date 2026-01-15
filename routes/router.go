@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(app *fiber.App) {
-	SetupStaticFilesGroup(app)
-	SetupHealthCheckRoutes(app)
+func SetupRoutes(router *gin.Engine) {
+	HealthCheckGroup(router)
+	SetupStaticFilesGroup(router)
 }
