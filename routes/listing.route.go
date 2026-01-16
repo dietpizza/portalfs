@@ -16,21 +16,19 @@ func ListingHandler(c *gin.Context) {
 	webPath := util.NormalizePath(c.Query("path"))
 	volumeName := c.Param("volume")
 
-	status, error := http.StatusOK, ""
+	status, error := http.StatusInternalServerError, "unknown error"
 
 	index := slices.IndexFunc(appConfig.Volumes, func(e config.Volume) bool {
 		return e.Name == volumeName
 	})
 
 	if index == -1 {
-		status, error = http.StatusNotFound, "volume does not exist"
+		status, error = http.StatusNotFound, "volume not found"
 	} else {
 		volumeInfo := appConfig.Volumes[index]
 		finalOsPath := path.Join(volumeInfo.Path, webPath)
 
-		isFolderExist := util.DoesDirExist(finalOsPath)
-
-		if isFolderExist {
+		if util.DoesDirExist(finalOsPath) {
 			dirContents, err := util.GetDirectoryListing(finalOsPath, webPath)
 
 			if err != nil {
@@ -40,15 +38,21 @@ func ListingHandler(c *gin.Context) {
 				return
 			}
 		} else {
-			status, error = http.StatusNotFound, "folder does not exist"
+			status, error = http.StatusNotFound, "folder not found"
 		}
 	}
 
 	c.JSON(status, error)
 }
 
+func VolumeListHandler(c *gin.Context) {
+	appConfig := config.GetConfig()
+	c.JSON(http.StatusOK, appConfig.Volumes)
+}
+
 func SetupListingGroup(router *gin.Engine) {
 	group := router.Group("/listing")
 
 	group.GET("/:volume", ListingHandler)
+	group.GET("/", VolumeListHandler)
 }
