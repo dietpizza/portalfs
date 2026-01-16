@@ -11,14 +11,12 @@ type AppConfig struct {
 	App     AppSettings `mapstructure:"app"`
 	Volumes []Volume    `mapstructure:"volumes"`
 }
-
 type AppSettings struct {
-	Port int `mapstructure:"port"`
+	Port int `json:"port"`
 }
-
 type Volume struct {
-	Name string `mapstructure:"name"`
-	Path string `mapstructure:"path"`
+	Name string `json:"name"`
+	Path string `json:"path"`
 }
 
 var DefaultAppConfig = AppConfig{
@@ -27,7 +25,6 @@ var DefaultAppConfig = AppConfig{
 	},
 	Volumes: []Volume{},
 }
-
 var (
 	config *AppConfig
 	once   sync.Once
@@ -37,17 +34,25 @@ func GetConfig() *AppConfig {
 	once.Do(func() {
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
-		viper.AddConfigPath(".")
+
+		viper.AddConfigPath(".")                      // dev config
+		viper.AddConfigPath("$HOME/.config/portalfs") // user-specific
+		viper.AddConfigPath("/etc/portalfs")          // system-wide
 
 		err := viper.ReadInConfig()
 		if err != nil {
-			log.Fatalf("Error reading config file, %s", err)
+			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+				log.Println("config file not found -> using defaults ")
+			} else {
+				log.Fatalf("failed to load config: %v", err)
+			}
 		}
 
 		config = &DefaultAppConfig
+
 		err = viper.Unmarshal(config)
 		if err != nil {
-			log.Fatal("Unable to parse config file")
+			log.Fatalf("failed to parse config %v", err)
 		}
 	})
 

@@ -2,9 +2,9 @@ package util
 
 import (
 	"errors"
-	"fmt"
 	"mime"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -73,10 +73,10 @@ func GetDirectoryListing(osPath string, webPath string) ([]FileMeta, error) {
 
 		meta := FileMeta{
 			Filename:     info.Name(),
-			RelativePath: fmt.Sprintf("%s/%s", webPath, info.Name()),
+			RelativePath: path.Join(webPath, info.Name()),
 			MimeType:     GetMimeType(info),
 			Mtime:        info.ModTime().Unix(),
-			Ctime:        2000,
+			Ctime:        info.ModTime().Unix(),
 			Size:         info.Size(),
 		}
 
