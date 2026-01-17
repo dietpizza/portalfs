@@ -19,13 +19,12 @@ tasks:
     desc: build web package
     cmds:
       - echo "building web..."
-      # - cd web && bun install
-      # - cd web && bun run build
+      - cd web && bun install
+      - cd web && bun run build
 
   dev:
     desc: run the service for development (go run)
     cmds:
-      - task: build-web
       - echo "starting development server..."
       - wgo go run . -p 3000
 
