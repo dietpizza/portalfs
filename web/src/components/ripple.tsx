@@ -1,116 +1,6 @@
 import React, { useState, useRef } from "react";
 import type { MouseEvent } from "react";
-
-// interface RippleEffect {
-//   id: number;
-//   x: number;
-//   y: number;
-//   size: number;
-// }
-
-// interface RippleProps {
-//   children: React.ReactNode;
-//   className?: string;
-//   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
-//   disabled?: boolean;
-//   rippleColor?: string;
-// }
-
-// export const Ripple: React.FC<RippleProps> = ({
-//   children,
-//   className = "",
-//   onClick,
-//   disabled = false,
-//   rippleColor = "rgba(255, 255, 255, 0.3)",
-// }) => {
-//   const [ripples, setRipples] = useState<RippleEffect[]>([]);
-//   const containerRef = useRef<HTMLDivElement>(null);
-//   const nextId = useRef(0);
-
-//   const createRipple = (clientX: number, clientY: number) => {
-//     if (disabled || !containerRef.current) return;
-
-//     const rect = containerRef.current.getBoundingClientRect();
-//     const x = clientX - rect.left;
-//     const y = clientY - rect.top;
-
-//     // Calculate ripple size - should be large enough to cover the entire element
-//     const size = Math.max(rect.width, rect.height) * 2;
-
-//     const newRipple: RippleEffect = {
-//       id: nextId.current++,
-//       x,
-//       y,
-//       size,
-//     };
-
-//     setRipples((prev) => [...prev, newRipple]);
-
-//     // Remove ripple after animation completes
-//     setTimeout(() => {
-//       setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-//     }, 400);
-//   };
-
-//   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-//     if (
-//       e.pointerType === "mouse" ||
-//       e.pointerType === "touch" ||
-//       e.pointerType === "pen"
-//     ) {
-//       createRipple(e.clientX, e.clientY);
-//     }
-//   };
-
-//   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
-//     if (!disabled && onClick) {
-//       onClick(e);
-//     }
-//   };
-
-//   return (
-//     <div
-//       ref={containerRef}
-//       className={`relative overflow-hidden ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${className}`}
-//       onPointerDown={handlePointerDown}
-//       onClick={handleClick}
-//     >
-//       {children}
-
-//       {/* Ripple container */}
-//       <span className="absolute inset-0 pointer-events-none overflow-hidden">
-//         {ripples.map((ripple) => (
-//           <span
-//             key={ripple.id}
-//             className="absolute rounded-full animate-ripple"
-//             style={{
-//               left: ripple.x,
-//               top: ripple.y,
-//               width: ripple.size,
-//               height: ripple.size,
-//               transform: "translate(-50%, -50%) scale(0)",
-//               backgroundColor: rippleColor,
-//               animation: "ripple 400ms ease-out",
-//             }}
-//           />
-//         ))}
-//       </span>
-
-//       <style jsx>{`
-//         @keyframes ripple {
-//           0% {
-//             transform: translate(-50%, -50%) scale(0);
-//             opacity: 1;
-//           }
-//           100% {
-//             transform: translate(-50%, -50%) scale(1);
-//             opacity: 0;
-//           }
-//         }
-//       `}</style>
-//     </div>
-//   );
-// };
+import { AnimatePresence } from "motion/react";
 
 interface RippleEffect {
   id: number;
@@ -157,7 +47,7 @@ export const Ripple: React.FC<RippleProps> = ({
     // Using cubic easing for duration with refined timing
     const maxDimension = Math.max(rect.width, rect.height);
     const normalizedSize = Math.min(maxDimension / 100, 6); // Normalize to 0-6 range
-    const duration = 320 + Math.pow(normalizedSize, 1.8) * 65; // Cubic curve, 320-660ms range
+    const duration = 200 + Math.pow(normalizedSize, 1.6) * 65; // Cubic curve, 240-600ms range
 
     const newRipple: RippleEffect = {
       id: nextId.current++,
@@ -279,8 +169,8 @@ export const Ripple: React.FC<RippleProps> = ({
               height: ripple.size,
               transform: "translate(-50%, -50%) scale(0)",
               backgroundColor: rippleColor,
-              filter: "blur(20px)",
-              animation: `md3-ripple ${ripple.duration}ms cubic-bezier(0.2, 0, 0, 1)`,
+              filter: "blur(60px)",
+              animation: `md3-ripple ${ripple.duration}ms ease-out`,
             }}
           />
         ))}
@@ -290,17 +180,17 @@ export const Ripple: React.FC<RippleProps> = ({
         @keyframes md3-ripple {
           0% {
             transform: translate(-50%, -50%) scale(0);
-            opacity: 0.12;
+            opacity: 0.18;
           }
           50% {
-            opacity: 0.1;
+            opacity: 0.18;
           }
           75% {
-            opacity: 0.06;
+            opacity: 0.18;
           }
           100% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0.18;
           }
         }
       `}</style>
