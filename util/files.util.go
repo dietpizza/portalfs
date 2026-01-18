@@ -6,16 +6,18 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
+	"time"
 )
 
 type FileMeta struct {
-	Filename     string `json:"filename"`
-	RelativePath string `json:"relative_path"`
-	Mtime        int64  `json:"mtime"`
-	Ctime        int64  `json:"ctime"`
-	MimeType     string `json:"mimetype"`
-	Size         int64  `json:"size"`
+	Filename     string    `json:"filename"`
+	RelativePath string    `json:"relative_path"`
+	Mtime        time.Time `json:"mtime"`
+	Ctime        time.Time `json:"ctime"`
+	MimeType     string    `json:"mimetype"`
+	Size         int64     `json:"size"`
 }
 
 func GetDirName(path string) string {
@@ -75,12 +77,16 @@ func GetDirectoryListing(osPath string, webPath string) ([]FileMeta, error) {
 			Filename:     info.Name(),
 			RelativePath: path.Join(webPath, info.Name()),
 			MimeType:     GetMimeType(info),
-			Mtime:        info.ModTime().Unix(),
-			Ctime:        info.ModTime().Unix(),
+			Mtime:        info.ModTime(),
+			Ctime:        info.ModTime(),
 			Size:         info.Size(),
 		}
 
 		listing = append(listing, meta)
+
+		sort.Slice(listing, func(i, j int) bool {
+			return listing[i].Mtime.After(listing[j].Mtime)
+		})
 	}
 
 	return listing, nil

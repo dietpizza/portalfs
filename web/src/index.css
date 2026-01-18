@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@import "./reset.css";
+
+@theme {
+  --color-primary: rgb(200 191 255);
+  --color-surface-tint: rgb(200 191 255);
+  --color-on-primary: rgb(48 40 95);
+  --color-primary-container: rgb(71 63 119);
+  --color-on-primary-container: rgb(229 222 255);
+  --color-secondary: rgb(201 195 220);
+  --color-on-secondary: rgb(49 46 65);
+  --color-secondary-container: rgb(72 68 89);
+  --color-on-secondary-container: rgb(229 223 249);
+  --color-tertiary: rgb(236 184 205);
+  --color-on-tertiary: rgb(72 37 54);
+  --color-tertiary-container: rgb(97 59 77);
+  --color-on-tertiary-container: rgb(255 216 231);
+  --color-error: rgb(255 180 171);
+  --color-on-error: rgb(105 0 5);
+  --color-error-container: rgb(147 0 10);
+  --color-on-error-container: rgb(255 218 214);
+  --color-background: rgb(20 19 24);
+  --color-on-background: rgb(229 225 233);
+  --color-surface: rgb(20 19 24);
+  --color-on-surface: rgb(229 225 233);
+  --color-surface-variant: rgb(72 69 78);
+  --color-on-surface-variant: rgb(201 197 208);
+  --color-outline: rgb(147 143 153);
+  --color-outline-variant: rgb(72 69 78);
+  --color-shadow: rgb(0 0 0);
+  --color-scrim: rgb(0 0 0);
+  --color-inverse-surface: rgb(229 225 233);
+  --color-inverse-on-surface: rgb(49 47 54);
+  --color-inverse-primary: rgb(95 87 145);
+  --color-primary-fixed: rgb(229 222 255);
+  --color-on-primary-fixed: rgb(27 17 73);
+  --color-primary-fixed-dim: rgb(200 191 255);
+  --color-on-primary-fixed-variant: rgb(71 63 119);
+  --color-secondary-fixed: rgb(229 223 249);
+  --color-on-secondary-fixed: rgb(28 25 43);
+  --color-secondary-fixed-dim: rgb(201 195 220);
+  --color-on-secondary-fixed-variant: rgb(72 68 89);
+  --color-tertiary-fixed: rgb(255 216 231);
+  --color-on-tertiary-fixed: rgb(48 17 33);
+  --color-tertiary-fixed-dim: rgb(236 184 205);
+  --color-on-tertiary-fixed-variant: rgb(97 59 77);
+  --color-surface-dim: rgb(20 19 24);
+  --color-surface-bright: rgb(58 56 62);
+  --color-surface-container-lowest: rgb(14 13 19);
+  --color-surface-container-low: rgb(28 27 32);
+  --color-surface-container: rgb(32 31 37);
+  --color-surface-container-high: rgb(43 41 47);
+  --color-surface-container-highest: rgb(53 52 58);
+}
+
+/* Hide scrollbars but keep functionality everywhere */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Ensure html and body are also covered */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  @theme {
+    --md-sys-color-primary: rgb(95 87 145);
+    --md-sys-color-surface-tint: rgb(95 87 145);
+    --md-sys-color-on-primary: rgb(255 255 255);
+    --md-sys-color-primary-container: rgb(229 222 255);
+    --md-sys-color-on-primary-container: rgb(71 63 119);
+    --md-sys-color-secondary: rgb(95 92 113);
+    --md-sys-color-on-secondary: rgb(255 255 255);
+    --md-sys-color-secondary-container: rgb(229 223 249);
+    --md-sys-color-on-secondary-container: rgb(72 68 89);
+    --md-sys-color-tertiary: rgb(124 82 100);
+    --md-sys-color-on-tertiary: rgb(255 255 255);
+    --md-sys-color-tertiary-container: rgb(255 216 231);
+    --md-sys-color-on-tertiary-container: rgb(97 59 77);
+    --md-sys-color-error: rgb(186 26 26);
+    --md-sys-color-on-error: rgb(255 255 255);
+    --md-sys-color-error-container: rgb(255 218 214);
+    --md-sys-color-on-error-container: rgb(147 0 10);
+    --md-sys-color-background: rgb(253 248 255);
+    --md-sys-color-on-background: rgb(28 27 32);
+    --md-sys-color-surface: rgb(253 248 255);
+    --md-sys-color-on-surface: rgb(28 27 32);
+    --md-sys-color-surface-variant: rgb(229 224 236);
+    --md-sys-color-on-surface-variant: rgb(72 69 78);
+    --md-sys-color-outline: rgb(121 118 127);
+    --md-sys-color-outline-variant: rgb(201 197 208);
+    --md-sys-color-shadow: rgb(0 0 0);
+    --md-sys-color-scrim: rgb(0 0 0);
+    --md-sys-color-inverse-surface: rgb(49 47 54);
+    --md-sys-color-inverse-on-surface: rgb(244 239 247);
+    --md-sys-color-inverse-primary: rgb(200 191 255);
+    --md-sys-color-primary-fixed: rgb(229 222 255);
+    --md-sys-color-on-primary-fixed: rgb(27 17 73);
+    --md-sys-color-primary-fixed-dim: rgb(200 191 255);
+    --md-sys-color-on-primary-fixed-variant: rgb(71 63 119);
+    --md-sys-color-secondary-fixed: rgb(229 223 249);
+    --md-sys-color-on-secondary-fixed: rgb(28 25 43);
+    --md-sys-color-secondary-fixed-dim: rgb(201 195 220);
+    --md-sys-color-on-secondary-fixed-variant: rgb(72 68 89);
+    --md-sys-color-tertiary-fixed: rgb(255 216 231);
+    --md-sys-color-on-tertiary-fixed: rgb(48 17 33);
+    --md-sys-color-tertiary-fixed-dim: rgb(236 184 205);
+    --md-sys-color-on-tertiary-fixed-variant: rgb(97 59 77);
+    --md-sys-color-surface-dim: rgb(221 216 224);
+    --md-sys-color-surface-bright: rgb(253 248 255);
+    --md-sys-color-surface-container-lowest: rgb(255 255 255);
+    --md-sys-color-surface-container-low: rgb(247 242 250);
+    --md-sys-color-surface-container: rgb(241 236 244);
+    --md-sys-color-surface-container-high: rgb(235 230 238);
+    --md-sys-color-surface-container-highest: rgb(229 225 233);
+  }
+}
