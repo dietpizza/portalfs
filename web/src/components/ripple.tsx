@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import type { MouseEvent } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface RippleEffect {
   id: number;
@@ -28,9 +29,17 @@ export const Ripple: React.FC<RippleProps> = ({
 }) => {
   const [ripples, setRipples] = useState<RippleEffect[]>([]);
   const [isHovered, setIsHovered] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [extraOp, setExtraOp] = useState<number | null>(null);
   const nextId = useRef(0);
+
+  const getRippleExtaOpacity = (size: number) => {
+    if (size >= 128) return 0;
+    if (size >= 72) return 0.1;
+    if (size >= 48) return 0.4;
+    if (size >= 24) return 0.7;
+    return 0.9;
+  };
 
   const createRipple = (clientX: number, clientY: number) => {
     if (disabled || !containerRef.current) return;
@@ -41,8 +50,12 @@ export const Ripple: React.FC<RippleProps> = ({
 
     // MD3 ripple is more compact than MD2
     const size = Math.max(rect.width, rect.height) * 2;
+    if (extraOp === null) {
+      console.info("Extra Opacity:", getRippleExtaOpacity(size / 2), size / 2);
+      setExtraOp(getRippleExtaOpacity(size / 2));
+    }
 
-    const duration = 200 + 200; // Cubic curve, 240-600ms range
+    const duration = 480;
 
     const newRipple: RippleEffect = {
       id: nextId.current++,
@@ -70,7 +83,6 @@ export const Ripple: React.FC<RippleProps> = ({
       // Stop propagation to prevent parent ripples from triggering
       e.stopPropagation();
 
-      setIsPressed(true);
       createRipple(e.clientX, e.clientY);
 
       // On touch devices, clear hover state when touching
@@ -85,25 +97,9 @@ export const Ripple: React.FC<RippleProps> = ({
     if (e.pointerType === "touch") {
       setIsHovered(false);
     }
-
-    // Let ripple animation complete before removing press state
-    // Find the longest duration ripple currently active
-    const longestDuration =
-      ripples.length > 0 ? Math.max(...ripples.map((r) => r.duration)) : 400;
-
-    setTimeout(() => {
-      setIsPressed(false);
-    }, longestDuration);
   };
 
   const handlePointerLeave = () => {
-    // Find the longest duration ripple currently active
-    const longestDuration =
-      ripples.length > 0 ? Math.max(...ripples.map((r) => r.duration)) : 400;
-
-    setTimeout(() => {
-      setIsPressed(false);
-    }, longestDuration);
     setIsHovered(false);
   };
 
@@ -135,60 +131,49 @@ export const Ripple: React.FC<RippleProps> = ({
       {/* MD3 State Layers */}
       <span className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Hover state layer - MD3 uses persistent overlay */}
-        <span
-          className="absolute inset-0 transition-opacity duration-300"
+        <motion.span
+          className="absolute inset-0"
           style={{
             backgroundColor: hoverColor,
-            opacity: isHovered ? 0.08 : 0,
           }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 0.08 : 0 }}
+          transition={{ duration: 0.3 }}
         />
 
-        {/* Press state layer - MD3 shows this during press */}
-        {/*<span
-          className="absolute inset-0 transition-opacity duration-300"
-          style={{
-            backgroundColor: rippleColor,
-            opacity: isPressed ? 0.12 : 0,
-          }}
-        />*/}
-
-        {/* Ripple effects */}
-        {ripples.map((ripple) => (
-          <span
-            key={ripple.id}
-            className="absolute rounded-full"
-            style={{
-              left: ripple.x,
-              top: ripple.y,
-              width: ripple.size,
-              height: ripple.size,
-              transform: "translate(-50%, -50%) scale(0)",
-              backgroundColor: rippleColor,
-              filter: "blur(60px)",
-              animation: `md3-ripple ${ripple.duration}ms ease-out`,
-            }}
-          />
-        ))}
+        {/* Ripple effects with AnimatePresence */}
+        <AnimatePresence>
+          {ripples.map((ripple) => (
+            <motion.span
+              key={ripple.id}
+              className="absolute rounded-full"
+              style={{
+                left: ripple.x,
+                top: ripple.y,
+                width: ripple.size,
+                height: ripple.size,
+                backgroundColor: rippleColor,
+                filter: "blur(60px)",
+              }}
+              initial={{
+                transform: "translate(-50%, -50%) scale(0)",
+                opacity: 0,
+              }}
+              animate={{
+                transform: "translate(-50%, -50%) scale(0.9)",
+                opacity: 0.22 + (extraOp || 0),
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: ripple.duration / 1000,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+        </AnimatePresence>
       </span>
-
-      <style>{`
-        @keyframes md3-ripple {
-          0% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0.18;
-          }
-          50% {
-            opacity: 0.18;
-          }
-          75% {
-            opacity: 0.18;
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(0.9);
-            opacity: 0.18;
-          }
-        }
-      `}</style>
     </div>
   );
 };
