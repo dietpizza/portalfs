@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import type { MouseEvent } from "react";
-import { AnimatePresence } from "motion/react";
 
 interface RippleEffect {
   id: number;
@@ -43,11 +42,7 @@ export const Ripple: React.FC<RippleProps> = ({
     // MD3 ripple is more compact than MD2
     const size = Math.max(rect.width, rect.height) * 2;
 
-    // Calculate duration based on size for more natural feel
-    // Using cubic easing for duration with refined timing
-    const maxDimension = Math.max(rect.width, rect.height);
-    const normalizedSize = Math.min(maxDimension / 100, 6); // Normalize to 0-6 range
-    const duration = 200 + Math.pow(normalizedSize, 1.6) * 65; // Cubic curve, 240-600ms range
+    const duration = 200 + 200; // Cubic curve, 240-600ms range
 
     const newRipple: RippleEffect = {
       id: nextId.current++,
@@ -149,13 +144,13 @@ export const Ripple: React.FC<RippleProps> = ({
         />
 
         {/* Press state layer - MD3 shows this during press */}
-        <span
+        {/*<span
           className="absolute inset-0 transition-opacity duration-300"
           style={{
             backgroundColor: rippleColor,
             opacity: isPressed ? 0.12 : 0,
           }}
-        />
+        />*/}
 
         {/* Ripple effects */}
         {ripples.map((ripple) => (
